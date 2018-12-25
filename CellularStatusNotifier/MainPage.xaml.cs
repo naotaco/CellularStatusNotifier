@@ -17,8 +17,6 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using System.Text;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -34,57 +32,13 @@ namespace CellularStatusNotifier
             this.InitializeComponent();
             Debug.WriteLine("Hello");
 
-            SetupTask();
+            NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
 
-            //NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
+            var profiles = NetworkInformation.GetConnectionProfiles();
+            PrintStatus(profiles);
 
-            //var profiles = NetworkInformation.GetConnectionProfiles();
-            //PrintStatus(profiles);
-
-            //var p = NetworkInformation.GetInternetConnectionProfile();
-            //NotifyCurrentStatus(p);
-        }
-
-        const string TaskName = nameof(NetworkStatusObserver);
-        bool taskRegistered = false;
-        BackgroundTaskRegistration task = null;
-
-        private void SetupTask()
-        {
-
-            foreach (var t in BackgroundTaskRegistration.AllTasks)
-            {
-                if (t.Value.Name == TaskName)
-                {
-                    taskRegistered = true;
-                    break;
-                }
-            }
-
-            var builder = new BackgroundTaskBuilder();
-
-            builder.Name = TaskName;
-            builder.SetTrigger(new TimeTrigger(15, true));
-            builder.SetTrigger(new SystemTrigger(SystemTriggerType.UserAway, false));
-            builder.SetTrigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
-            builder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
-            builder.Name = "Something on background";
-            builder.AddCondition(new SystemCondition(SystemConditionType.UserPresent));
-            builder.AddCondition(new SystemCondition(SystemConditionType.UserNotPresent));
-
-            task = builder.Register();
-            // task.Completed += Task_Completed;
-
-            task.Completed += new BackgroundTaskCompletedEventHandler(Task_Completed);
-        }
-
-
-        private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
-        {
-            var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var key = task?.TaskId.ToString();
-            var message = settings.Values[key].ToString();
-            Debug.WriteLine(message);
+            var p = NetworkInformation.GetInternetConnectionProfile();
+            NotifyCurrentStatus(p);
         }
 
         private static void NotifyCurrentStatus(ConnectionProfile p)

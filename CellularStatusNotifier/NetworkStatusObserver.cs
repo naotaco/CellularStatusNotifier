@@ -10,10 +10,12 @@ using Windows.Foundation.Collections;
 
 namespace CellularStatusNotifier
 {
-    public sealed class NetworkStatusObserver : IBackgroundTask
+    class NetworkStatusObserver : IBackgroundTask
     {
         private BackgroundTaskDeferral backgroundTaskDeferral;
         private AppServiceConnection appServiceconnection;
+        private String[] inventoryItems = new string[] { "Robot vacuum", "Chair" };
+        private double[] inventoryPrices = new double[] { 129.99, 88.99 };
 
         public void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -25,14 +27,12 @@ namespace CellularStatusNotifier
             appServiceconnection = details.AppServiceConnection;
             appServiceconnection.RequestReceived += OnRequestReceived;
             Debug.WriteLine("run");
-
-            this.backgroundTaskDeferral.Complete();
         }
 
         private async void OnRequestReceived(AppServiceConnection sender, AppServiceRequestReceivedEventArgs args)
         {
             // This function is called when the app service receives a request
-            Debug.WriteLine("Request Received" + args.Request.Message);
+            Debug.WriteLine("Request Received");
         }
 
         private void OnTaskCanceled(IBackgroundTaskInstance sender, BackgroundTaskCancellationReason reason)

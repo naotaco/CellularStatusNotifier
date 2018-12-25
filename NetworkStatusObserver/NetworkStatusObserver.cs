@@ -8,7 +8,7 @@ using Windows.ApplicationModel.AppService;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Collections;
 
-namespace CellularStatusNotifier
+namespace NetworkStatusObserver
 {
     public sealed class NetworkStatusObserver : IBackgroundTask
     {

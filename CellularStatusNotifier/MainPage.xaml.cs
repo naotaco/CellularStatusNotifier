@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using System.Text;
+using Windows.System.Threading;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,6 +29,9 @@ namespace CellularStatusNotifier
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        ProfileComparisonRule rule = new ProfileComparisonRule();
+        ConnectionProfile lastProfile = null;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -39,6 +44,24 @@ namespace CellularStatusNotifier
 
             var p = NetworkInformation.GetInternetConnectionProfile();
             NotifyCurrentStatus(p);
+            lastProfile = p;
+
+            var PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(async (source) =>
+            {
+                var current = NetworkInformation.GetInternetConnectionProfile();
+
+                if (!lastProfile.IsSameCondition(current, rule))
+                {
+                    // found differene.
+
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.High,
+                        () =>
+                        {
+                            NotifyCurrentStatus(current);
+                        });
+                }
+
+            }, TimeSpan.FromSeconds(3));
         }
 
         private static void NotifyCurrentStatus(ConnectionProfile p)

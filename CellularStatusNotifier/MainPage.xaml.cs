@@ -32,10 +32,16 @@ namespace CellularStatusNotifier
         ProfileComparisonRule rule = new ProfileComparisonRule();
         ConnectionProfile lastProfile = null;
 
+        public MainPageModel ViewModel { get; set; } = new MainPageModel();
+
         public MainPage()
         {
             this.InitializeComponent();
             Debug.WriteLine("Hello");
+
+            ViewModel.Rule = rule;
+            ViewModel.CurrentStatus = lastProfile;
+
 
             NetworkInformation.NetworkStatusChanged += NetworkInformation_NetworkStatusChanged;
 
@@ -44,22 +50,24 @@ namespace CellularStatusNotifier
 
             var p = NetworkInformation.GetInternetConnectionProfile();
             NotifyCurrentStatus(p);
-            lastProfile = p;
+            this.ViewModel.CurrentStatus = p;
 
             var PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(async (source) =>
             {
-                var temp_last = lastProfile;
-                lastProfile = NetworkInformation.GetInternetConnectionProfile();
+                var temp_last = this.ViewModel.CurrentStatus;
+                var temp_current = NetworkInformation.GetInternetConnectionProfile();
+                
 
 
-                if (!lastProfile.IsSameCondition(temp_last, rule))
+                if (!temp_last.IsSameCondition(temp_current, rule))
                 {
                     // found differene.
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.High,
                         () =>
                         {
-                            NotifyCurrentStatus(temp_last);
+                            this.ViewModel.CurrentStatus = temp_current;
+                            NotifyCurrentStatus(temp_current);
                         });
                 }
 

@@ -40,6 +40,7 @@ namespace CellularStatusNotifier
                 if (self.WwanConnectionProfileDetails == null ||
                     target.WwanConnectionProfileDetails == null) { return false; }
 
+                // compare wwan detail.
                 var selfD = self.WwanConnectionProfileDetails;
                 var targetD = target.WwanConnectionProfileDetails;
                 return (

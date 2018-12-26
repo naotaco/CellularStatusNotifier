@@ -48,16 +48,18 @@ namespace CellularStatusNotifier
 
             var PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer(async (source) =>
             {
-                var current = NetworkInformation.GetInternetConnectionProfile();
+                var temp_last = lastProfile;
+                lastProfile = NetworkInformation.GetInternetConnectionProfile();
 
-                if (!lastProfile.IsSameCondition(current, rule))
+
+                if (!lastProfile.IsSameCondition(temp_last, rule))
                 {
                     // found differene.
 
                     await Dispatcher.RunAsync(CoreDispatcherPriority.High,
                         () =>
                         {
-                            NotifyCurrentStatus(current);
+                            NotifyCurrentStatus(temp_last);
                         });
                 }
 

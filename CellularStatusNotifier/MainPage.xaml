@@ -15,6 +15,8 @@
         <local:WlanVisibilityConverter x:Key="wlanVisibilityConv"/>
         <local:WwanConnectionTypeConverter x:Key="wwanConnConv"/>
         <local:SsidConverter x:Key="ssidConv"/>
+        <local:WwanApnConverter x:Key="wwanApnConv"/>
+        <local:IpTypeConverter x:Key="ipTypeConv"/>
     </Page.Resources>
     <Grid>
         <StackPanel Margin="30, 60">
@@ -35,7 +37,7 @@
 
             </Grid>
             <Grid x:Name="WwanStatus" 
-                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanVisibilityConv}, Mode=OneWay}">
+                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanVisibilityConv}, Mode=OneWay, FallbackValue=Collapsed}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="3*"/>
@@ -43,13 +45,19 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="Connection Type" Grid.Row="0"/>
                 <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanConnConv}, Mode=OneWay}" Grid.Column="1"/>
 
+                <TextBlock Text="IP kind" Grid.Row="1"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource ipTypeConv}, Mode=OneWay}" Grid.Column="1" Grid.Row="1"/>
+                <TextBlock Text="WWan Access Point" Grid.Row="2"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanApnConv}, Mode=OneWay}" Grid.Column="1" Grid.Row="2"/>
+
             </Grid>
             <Grid x:Name="WlanStatus"
-                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wlanVisibilityConv}, Mode=OneWay}">
+                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wlanVisibilityConv}, Mode=OneWay, FallbackValue=Collapsed}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="3*"/>

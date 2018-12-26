@@ -1,24 +1,14 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.Networking.Connectivity;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Toolkit.Uwp.Notifications;
-using Windows.UI.Notifications;
 using System.Text;
+using Windows.Networking.Connectivity;
 using Windows.System.Threading;
 using Windows.UI.Core;
+using Windows.UI.Notifications;
+using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -56,20 +46,17 @@ namespace CellularStatusNotifier
             {
                 var temp_last = this.ViewModel.CurrentStatus;
                 var temp_current = NetworkInformation.GetInternetConnectionProfile();
-                
 
+                await Dispatcher.RunAsync(CoreDispatcherPriority.High,
+                    () =>
+                    {
+                        this.ViewModel.CurrentStatus = temp_current;
 
-                if (!temp_last.IsSameCondition(temp_current, rule))
-                {
-                    // found differene.
-
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.High,
-                        () =>
+                        if (!temp_last.IsSameCondition(temp_current, rule))
                         {
-                            this.ViewModel.CurrentStatus = temp_current;
                             NotifyCurrentStatus(temp_current);
-                        });
-                }
+                        }
+                    });
 
             }, TimeSpan.FromSeconds(3));
         }
@@ -127,7 +114,7 @@ namespace CellularStatusNotifier
                 {
                     Children =
                     {
-            new AdaptiveText()            {                Text = text            }
+                        new AdaptiveText() { Text = text }
                     }
                 }
             };
@@ -157,8 +144,6 @@ namespace CellularStatusNotifier
 
         private static void PrintStatus(IReadOnlyList<ConnectionProfile> profiles)
         {
-            return;
-
             if (profiles != null)
             {
                 Debug.WriteLine("ok");

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -140,6 +136,54 @@ namespace CellularStatusNotifier
             var p = value as ConnectionProfile;
             if (p.WlanConnectionProfileDetails == null) { return "-"; }
             return p.WlanConnectionProfileDetails.GetConnectedSsid();
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class WwanApnConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value == null) { return "-"; }
+
+            var p = value as ConnectionProfile;
+            if (p.WwanConnectionProfileDetails == null) { return "-"; }
+            return p.WwanConnectionProfileDetails.AccessPointName;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class IpTypeConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value == null) { return "-"; }
+
+            var p = value as ConnectionProfile;
+            if (p.WwanConnectionProfileDetails == null) { return "-"; }
+            switch (p.WwanConnectionProfileDetails.IPKind)
+            {
+                case WwanNetworkIPKind.Ipv4:
+                    return "IPv4";
+                case WwanNetworkIPKind.Ipv4v6:
+                    return "IPv4/v6";
+                case WwanNetworkIPKind.Ipv4v6v4Xlat:
+                    return "464XLAT";
+                case WwanNetworkIPKind.Ipv6:
+                    return "IPv6";
+                case WwanNetworkIPKind.None:
+                    return "None";
+                default:
+                    return "Unknown";
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

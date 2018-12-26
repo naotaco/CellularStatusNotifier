@@ -10,6 +10,11 @@
 
     <Page.Resources>
         <local:ConnectionMethodConverter x:Key="ConvConnectionMethod"/>
+        <local:SignalLevelConverter x:Key="slConv"/>
+        <local:WwanVisibilityConverter x:Key="wwanVisibilityConv"/>
+        <local:WlanVisibilityConverter x:Key="wlanVisibilityConv"/>
+        <local:WwanConnectionTypeConverter x:Key="wwanConnConv"/>
+        <local:SsidConverter x:Key="ssidConv"/>
     </Page.Resources>
     <Grid>
         <StackPanel Margin="30, 60">
@@ -21,19 +26,44 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-
                 </Grid.RowDefinitions>
                 <TextBlock Text="Connection method"/>
-                <TextBlock Text="ProfileName" Grid.Row="1"/>
-                <TextBlock Text="Signal level" Grid.Row="2"/>
-                <TextBlock Text="SSID" Grid.Row="3"/>
-                <TextBlock Text="Connection Type" Grid.Row="4"/>
+                <TextBlock Text="Signal level" Grid.Row="1"/>
 
-                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource ConvConnectionMethod}, Mode=OneWay}"
-                           Grid.Column="1"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource ConvConnectionMethod}, Mode=OneWay}" Grid.Column="1"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource slConv}, Mode=OneWay}" Grid.Column="1" Grid.Row="1"/>
+
+            </Grid>
+            <Grid x:Name="WwanStatus" 
+                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanVisibilityConv}, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Connection Type" Grid.Row="0"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wwanConnConv}, Mode=OneWay}" Grid.Column="1"/>
+
+            </Grid>
+            <Grid x:Name="WlanStatus"
+                  Visibility="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource wlanVisibilityConv}, Mode=OneWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ProfileName" Grid.Row="0"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus.ProfileName}" Grid.Column="1" Grid.Row="0"/>
+                <TextBlock Text="SSID" Grid.Row="1"/>
+                <TextBlock Text="{x:Bind ViewModel.CurrentStatus, Converter={StaticResource ssidConv}, Mode=OneWay}" Grid.Row="1" Grid.Column="1"/>
+
+
             </Grid>
             <Grid x:Name="RuleSettingGrid">
 

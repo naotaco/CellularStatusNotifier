@@ -63,6 +63,12 @@ namespace CellularStatusNotifier
 
         private static void NotifyCurrentStatus(ConnectionProfile p)
         {
+            if (p == null) {
+                Debug.WriteLine("No service.");
+                InvokeNotification("No service.");
+                return;
+            }
+
             if (p.IsWwanConnectionProfile)
             {
                 Debug.WriteLine("Current: WWan");
@@ -154,8 +160,7 @@ namespace CellularStatusNotifier
             }
 
 
-
-            foreach (var p in profiles)
+            foreach (var p in profiles.Where(p => p != null))
             {
 
                 if (p.IsWlanConnectionProfile)
